@@ -3,11 +3,11 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "main": "dist/my-element.es.js",
+  "main": "dist/app.element.es.js",
   "exports": {
-    ".": "./dist/my-element.es.js"
+    ".": "./dist/app.element.es.js"
   },
-  "types": "types/my-element.d.ts",
+  "types": "types/app.element.d.ts",
   "files": [
     "dist",
     "types"
