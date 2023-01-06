@@ -2,12 +2,6 @@
   "name": "silver-springs-reservations",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
-  "main": "dist/app.element.es.js",
-  "exports": {
-    ".": "./dist/app.element.es.js"
-  },
-  "types": "types/app.element.d.ts",
   "files": [
     "dist",
     "types"
