@@ -10,6 +10,7 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 
+  --primary-600: #0284c7;
 }
 
 html, body {

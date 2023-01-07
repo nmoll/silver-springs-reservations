@@ -1,16 +1,24 @@
 import { css, html, LitElement, state } from "lit-element";
 import { customElement } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
+import { logout } from "../firebase/firebase";
+import "../ui/button.element";
 
 @customElement("site-map")
 class SiteMapElement extends LitElement {
   @state()
   selectedSiteId: string | null = null;
 
+  @state()
+  reservedSiteId: string | null = null;
+
   render() {
     return html`
       <div class="flex flex-col h-full">
-        <h1 class="text-center">Silver Springs</h1>
+        <div class="header">
+          <h1 class="text-center">Silver Springs</h1>
+          <app-button @click="${() => logout()}">Log Out</app-button>
+        </div>
         <scroll-shadow class="flex flex-col overflow-hidden flex-1 mx-4">
           <div class="scroll-container flex-1">
             <div class="flex gap-4 pb-4">
@@ -32,15 +40,32 @@ class SiteMapElement extends LitElement {
           </div>
         </scroll-shadow>
         <div class="footer">
-          ${this.selectedSiteId
+          ${this.selectedSiteId && !this.reservedSiteId
             ? html`<span>
                 Site <strong>${this.selectedSiteId}</strong> (30 amp)
               </span>`
-            : "Select a site"}
-          <button ?disabled="${!this.selectedSiteId}">Reserve</button>
+            : html`<span>${!this.reservedSiteId ? "Select a site" : ""}</span>`}
+          ${this.reservedSiteId
+            ? html`<span
+                ><strong>${this.selectedSiteId}</strong> (30 amp)
+                reserved.</span
+              >`
+            : html`
+                <app-button
+                  color="primary"
+                  ?disabled="${!this.selectedSiteId}"
+                  @click="${() => this.reserveSelectedSite()}"
+                >
+                  Reserve
+                </app-button>
+              `}
         </div>
       </div>
     `;
+  }
+
+  reserveSelectedSite() {
+    this.reservedSiteId = this.selectedSiteId;
   }
 
   renderSites(row: string) {
@@ -61,6 +86,10 @@ class SiteMapElement extends LitElement {
   }
 
   onToggleSelectSite(row: string, col: number) {
+    if (this.reservedSiteId) {
+      return;
+    }
+
     const siteId = `${row}${col}`;
     if (this.selectedSiteId === siteId) {
       this.selectedSiteId = null;
@@ -78,6 +107,13 @@ class SiteMapElement extends LitElement {
 
     .scroll-container {
       overflow: auto;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 1rem;
     }
 
     .site-map {
@@ -118,6 +154,7 @@ class SiteMapElement extends LitElement {
     }
 
     .footer {
+      height: 3rem;
       padding: 1rem;
       display: flex;
       align-items: center;
@@ -127,10 +164,18 @@ class SiteMapElement extends LitElement {
 
     button {
       border-radius: 0.25rem;
-      background: #0284c7;
-      border: 1px solid #0284c7;
-      color: white;
       padding: 0.5rem 1rem;
+      border: 0;
+      filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1))
+        drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+      background: white;
+      cursor: pointer;
+    }
+
+    button.primary {
+      background: var(--primary-600);
+      border: 1px solid var(--primary-600);
+      color: white;
     }
 
     button[aria-pressed="true"] {
